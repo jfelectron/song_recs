@@ -16,7 +16,7 @@ class SongRecommender(object):
     def __init__(self, data_path=None):
         """
 
-        :param data_path:
+        :param data_path: local data path to use if other than package /data
         :return:
         """
         self.data = {}
@@ -29,6 +29,10 @@ class SongRecommender(object):
         self._prep_data()
 
     def transform_data(self):
+        """
+        utility to transform song and user data
+        :return:
+        """
         self.song_vectors = self._song_tfidf().todense()
         self.user_profiles = self._user_tastes()
         print("transformed song and user preference data")
@@ -36,8 +40,8 @@ class SongRecommender(object):
     def recommend(self, user, n_songs=3):
         """
 
-        :param user:
-        :param n_songs:
+        :param user: str, the user to  make recs for
+        :param n_songs:  return top n songs
         :return:
         """
         predicted_tastes = np.squeeze(np.asarray(self.song_vectors.dot(self.user_profiles.loc[user].values)))
@@ -52,7 +56,7 @@ class SongRecommender(object):
 
     def _prep_data(self):
         """
-
+        wrapper for loading and transforming data
         """
         self._check_data_path()
         self._load_data()
@@ -60,6 +64,8 @@ class SongRecommender(object):
 
     def _user_tastes(self):
         """
+
+        Computes user taste profiles
 
         :return:
         """
@@ -76,7 +82,7 @@ class SongRecommender(object):
 
     def _song_tfidf(self):
         """
-
+        Generate song vectors using TF-IDF
         :return:
         """
         self.song_names = list(self.data["song"].index)
